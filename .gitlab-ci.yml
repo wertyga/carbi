@@ -1,0 +1,11 @@
+image: ubuntu
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq sshpass
+  script:
+    - export SSHPASS=$USER_PASS
+    - sshpass -e ssh -o StrictHostKeyChecking=no mark2@142.93.33.129 "cd apps/carbi && pm2 stop all && git pull && rm -r BUILD && npm i && npm run all:build && cd CLIENT && rm -r server-build && npm i && npm run build && cd .. && pm2 start pm2.config.js"

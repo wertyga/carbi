@@ -1,0 +1,10 @@
+export { fetchBinancePairsData } from './binance/binanceApi';
+export { getExmoPrices } from './exmo/aggregateExmoData';
+export { getHotbitPrices } from './hotbit/aggregateHotbitData';
+export { getPoloniexPrices } from './poloniex/agregatePoloniexData';
+export { getOkexPrices } from './okex/aggregateOkexData';
+export { getHitbtcPrices } from './hitbtc/aggregateHitbtcData';
+export { getDigifinexPrices } from './digifinex/aggregateDigifinexData';
+export { getHuobiPrices } from './huobi/aggregateHuobiData';
+export { getBitfinexPrices } from './bitfinex/agregateBitfinexHandler';
+export { getBittrexData } from './bittrex/aggregateBittrexData';
