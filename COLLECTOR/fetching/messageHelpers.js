@@ -45,7 +45,7 @@ export const getUserMessage = (prices, signals) => {
   try {
     const signalsWithMatch = signals
       .map(signal => checkNotifySignal(prices, signal))
-      .filter(({notifies}) => !!notifies.length);
+      .filter(({ notifies }) => !!notifies.length);
 
     return signalsWithMatch.map(({_id, owner, symbol, notifies}) => {
       const notifiesForMessage = notifies.filter(({active}) => !active);

@@ -1,6 +1,5 @@
 import express from 'express';
 import { gfUser } from 'HTTP/goldfish/index';
-
 import { User } from '../../models/index';
 import { getError } from '../helpers';
 
@@ -15,7 +14,7 @@ userRoute.post('/sign-in', async (req, res) => {
       throw error;
     }
 
-    const user = await User.findOne({ password });
+    const user = await User.findOne({ password }).populate({ path: 'signals' });
 
     if (!user) {
       const error = new Error(gfUser.accessDenided.en);
@@ -23,31 +22,31 @@ userRoute.post('/sign-in', async (req, res) => {
       throw error;
     }
 
-    const { username: userName, first_name, last_name, token, tariff } = user;
-    const sendData = {
-      username: userName,
-      first_name,
-      last_name,
-      token,
-      tariff,
-    };
+    // const { username: userName, first_name, last_name, token, tariff } = user;
+    // const sendData = {
+    //   username: userName,
+    //   first_name,
+    //   last_name,
+    //   token,
+    //   tariff,
+    // };
     user.password = '';
-    user.save();
+    await user.save();
 
-    res.json({ data: sendData });
+    res.json({ data: user });
   } catch (e) {
     const error = getError(e.message);
     res.status(e.status || 500).json(error);
   }
 });
 
-userRoute.get('/get-user', async ({ query: { token: userToken } , res }) => {
+userRoute.get('/', async ({ query: { token: userToken } , res }) => {
   if (!userToken) {
     res.status(404).json(getError(gfUser.noToken.en));
     return;
   }
 
-  const user = await User.findOne({ token: userToken });
+  const user = await User.findOne({ token: userToken }).populate({ path: 'signals' });
 
   if (!user) {
     res.status(404).json(getError(gfUser.noUser.en));

@@ -34,7 +34,6 @@ export const generateHash = (value) => {
     .update(value)
     .digest('hex');
 };
-
 export const generateToken = ({ username, telegramID }) => {
   return `${generateHash(username)}.${generateHash(telegramID)}.${generateHash(shortID.generate())}`;
 };
@@ -51,6 +50,15 @@ userSchema.statics.isTokenValid = async function(token) {
   const checkedToken = generateToken({ username, telegramID }).split('.').slice(0, 2).join('.');
 
   return checkedToken === userToken.split('.').slice(0, 2).join('.')
+};
+userSchema.statics.getUserWithUpdateToken = async function(opts) {
+  const existUser = await this.findOne(opts);
+  if (existUser) {
+    existUser.token = generateToken({ username: existUser.username, telegramID: existUser.telegramID });
+    return existUser.save();
+  }
+  
+  return existUser;
 };
 
 export const User = mongoose.model('user', userSchema);

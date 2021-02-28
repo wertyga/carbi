@@ -1,11 +1,11 @@
-import { mainPairs, secondaryPairs } from './commonData';
+import { MAIN_PAIRS, SECONDARY_PAIRS } from './commonData';
 import { gfCurrency } from '../goldfish';
 
 export const formatSymbol = (symbol) => {
   let mainKey;
   const editedSymbol = symbol.toUpperCase();
-  const mainCoin = mainPairs.find(item => new RegExp(item, 'i').test(editedSymbol));
-  const secondaryCoin = secondaryPairs.find(item => new RegExp(item, 'i').test(editedSymbol));
+  const mainCoin = MAIN_PAIRS.find(item => new RegExp(item, 'i').test(editedSymbol));
+  const secondaryCoin = SECONDARY_PAIRS.find(item => new RegExp(item, 'i').test(editedSymbol));
 
   if (mainCoin) {
     mainKey = mainCoin;

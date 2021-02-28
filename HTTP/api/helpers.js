@@ -3,7 +3,6 @@ export const getError = (message) => {
   return {
     errors: errors.map((error) => {
       if (typeof error === 'object') return error;
-
       return { message: error };
     }),
   };

@@ -1,4 +1,4 @@
-import { mostPopularCurrency } from '../commonData';
+import { MOST_POPULAR_CURRENCY } from '../commonData';
 import { gfCurrency } from '../../goldfish';
 
 import * as api from './api';
@@ -9,7 +9,7 @@ export const getHuobiPrices = async () => {
 
     return data.reduce((init, { symbol, close }) => {
       const editedSymbol = symbol.toUpperCase();
-      const char = mostPopularCurrency.find((item) => editedSymbol.indexOf(item) !== -1);
+      const char = MOST_POPULAR_CURRENCY.find((item) => editedSymbol.indexOf(item) !== -1);
       if (!char) return init;
 
       const mainChar = editedSymbol.indexOf(char) === 0 ? char : editedSymbol.replace(char, '');

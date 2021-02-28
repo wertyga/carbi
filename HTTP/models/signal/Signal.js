@@ -12,7 +12,6 @@ const signalSchema = new mongoose.Schema({
   owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
-      require: true,
   },
   notifies: {
     type: [{

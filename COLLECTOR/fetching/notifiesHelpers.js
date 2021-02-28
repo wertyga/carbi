@@ -68,12 +68,12 @@ export const handleNotifiesAfterNotify = async (allUsersSignals) => {
 };
 
 export const checkNotifies = async (prices) => {
-  const users = await User.find({ tariff: { $gt: 0 }, signals: { $not: { $size: 0 } } }).populate('signals');
+  const users = await User
+    .find({ tariff: { $gt: 0 }, signals: { $not: { $size: 0 } } })
+    .populate('signals');
   if (!users.length) return;
 
   try {
-    if (!users.length) return;
-
     const allUsersSignals = users
       .filter(({ signals }) => !!signals.length)
       .map(({ signals, telegramID }) => {

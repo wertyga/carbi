@@ -1,11 +1,11 @@
-export const mainPairs = ['ETH', 'BTC', 'BNB', 'BCH'];
-export const secondaryPairs = ['USDC', 'USDT', 'USD', 'RUB', 'EUR'];
-export const mostPopularCurrency = [
+export const MAIN_PAIRS = ['ETH', 'BTC', 'BNB', 'BCH'];
+export const SECONDARY_PAIRS = ['USDC', 'USDT', 'USD', 'RUB', 'EUR'];
+export const MOST_POPULAR_CURRENCY = [
   'ETH', 'BTC', 'BCH', 'USDC', 'USDT', 'USD', 'RUB', 'EUR',
   'ADA', 'XRP',
 ];
-export const unRegisterPairs = ['BTC/USDT', 'ETH/USDT', 'ETH/BTC'];
-export const unRegisterMarkets = ['EXMO', 'BINANCE'];
+export const FREE_USER_PAIRS = ['BTC/USDT', 'ETH/USDT', 'ETH/BTC'];
+export const FREE_USER_MARKETS = ['EXMO', 'BINANCE'];
 
 export const legend = {
   0: 'BINANCE',

@@ -1,16 +1,20 @@
 import _flatten from 'lodash/flatten';
 import _uniq from 'lodash/uniq';
-
+import _isEmpty from 'lodash/isEmpty';
+import { logger } from 'logger/logger';
+import { TIMES } from '../../utils/dateHelpers';
 import { legend } from '../markets/commonData';
 
-import { saveDataToDB, comparedMarketsData } from './helpers';
+import { savePricesToDB, comparedMarketsData, saveMarkets } from './helpers';
 import { checkNotifies } from './notifiesHelpers';
-import { logger } from 'logger/logger';
 
-const INTERVAL_TIME = 3000;
+const SAVE_PRICES_INTERVAL_TIME = 3000;
+const SAVE_MARKETS_INTERVAL_TIME = TIMES.DAY;
 const isDev = process.env.NODE_ENV !== 'production';
 let interval;
+let marketsInterval;
 let marker;
+let marketsList = {};
 
 const collectPairsExistAtLeastTwoMarkets = (markets) => {
   const allMarkets = Object.keys(markets);
@@ -46,14 +50,14 @@ export const fetchMarketsData = async () => {
   try {
     const marketsData = await comparedMarketsData();
    
-    const markets = {};
+    const currentMarkets = {};
     const pricesResult = {};
    
     marketsData.forEach((market = {}, i) => {
       const marketName = legend[i];
       Object.entries(market).forEach(([symbol, price]) => {
-        markets[marketName] = [
-          ...markets[marketName] || [],
+        currentMarkets[marketName] = [
+          ...currentMarkets[marketName] || [],
           symbol,
         ];
         
@@ -68,36 +72,39 @@ export const fetchMarketsData = async () => {
     });
     await checkNotifies(pricesResult);
 
-    const { marketsWithFilteredSymbols, filteredSymbols } =  collectPairsExistAtLeastTwoMarkets(markets);
-
-    const dataToSave = {
-      markets: marketsWithFilteredSymbols,
-      mainData: Object.entries(pricesResult)
-        .filter(([symbol]) => filteredSymbols.includes(symbol))
-        .map(([symbol, { prices }]) => ({ symbol, prices })),
-    };
-
-    await saveDataToDB(dataToSave);
-  } catch (e) {
-    if (isDev) {
-      console.log(e);
+    const { marketsWithFilteredSymbols, filteredSymbols } = collectPairsExistAtLeastTwoMarkets(currentMarkets);
+    if (_isEmpty(marketsList)) {
+      await saveMarkets(marketsWithFilteredSymbols);
     }
+    marketsList = marketsWithFilteredSymbols;
+    const pricesToSave = Object.entries(pricesResult)
+      .filter(([symbol]) => filteredSymbols.includes(symbol))
+      .map(([symbol, { prices }]) => ({ symbol, prices }));
+
+    await savePricesToDB(pricesToSave);
+  } catch (e) {
+    console.log(e);
 
     const error = `fetchMarketsData: ${e}`;
     logger(error, 'ERROR');
-
     intervalFetchMarketsData();
   } finally {
     marker = false;
   }
 };
 
-export function intervalFetchMarketsData() {
-  if (interval) {
-    clearInterval(interval);
-    interval = null;
-  }
+export async function intervalFetchMarketsData() {
+  clearInterval(interval);
+  interval = null;
+  clearInterval(marketsInterval);
+  marketsInterval = null;
+  
+  await fetchMarketsData();
+  
   interval = setInterval(() => {
     fetchMarketsData();
-  }, INTERVAL_TIME)
+  }, SAVE_PRICES_INTERVAL_TIME)
+  marketsInterval = setInterval(() => {
+    saveMarkets(marketsList);
+  }, SAVE_MARKETS_INTERVAL_TIME)
 };

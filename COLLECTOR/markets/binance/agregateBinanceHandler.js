@@ -1,4 +1,4 @@
-import { mostPopularCurrency  } from '../commonData';
+import { MOST_POPULAR_CURRENCY  } from '../commonData';
 import { fetchBinancePairsData } from './binanceApi';
 import { formatSymbol } from '../helpers';
 
@@ -9,7 +9,7 @@ let stopLimit = false;
 
 const binancePairsFilter = (binanceData) => {
   return Object.entries(binanceData)
-    .filter(([ key, value]) => mostPopularCurrency.find(symbol => key.indexOf(symbol) !== -1))
+    .filter(([ key, value]) => MOST_POPULAR_CURRENCY.find(symbol => key.indexOf(symbol) !== -1))
     .reduce((init, [key, value]) => ({ ...init, [key]: value }), {});
 };
 
