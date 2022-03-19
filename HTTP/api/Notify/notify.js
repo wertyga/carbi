@@ -12,8 +12,8 @@ notifyRoute.post('/', getUserMiddleware, async ({ body }, res) => {
 	try {
 		const { id, notifyType, value } = body;
 		const signal = await Signal.findById(id);
-		const isUserIsOwner = signal && String(signal.owner) === id;
-		if (!isUserIsOwner) {
+		// const isUserIsOwner = signal && String(signal.owner) === id;
+		if (!signal) {
 			throw constructError(gfErrorsMessages.ACCESS_DENIED, 400);
 		}
 		

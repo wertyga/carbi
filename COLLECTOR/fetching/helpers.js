@@ -49,7 +49,7 @@ export const comparedMarketsData = () => (
     getExmoPrices(),
     getPoloniexPrices(),
     getHotbitPrices(),
-    getOkexPrices(),
+    // getOkexPrices(),
     getHitbtcPrices(),
     getDigifinexPrices(),
     getHuobiPrices(),

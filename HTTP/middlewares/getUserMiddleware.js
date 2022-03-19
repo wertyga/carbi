@@ -5,7 +5,8 @@ export const getUserMiddleware = async (req, res, next) => {
 	const user = token && await User.findOne({ token });
 	req.user = {
 		...user,
-		isFreeUser: !user || user.tariff < 1,
+		isFreeUser: false,
+		// isFreeUser: !user || user.tariff < 1,
 	};
 	next();
 };
